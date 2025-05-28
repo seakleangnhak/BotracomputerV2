@@ -20,6 +20,6 @@
       "~/*": ["./src/*"]
     }
   },
-  "files": ["./.prettierrc.js"],
+  "files": ["./.prettierrc.js", "postcss.config.cjs"],
   "include": ["src", "./*.d.ts", "./*.config.ts"]
 }
