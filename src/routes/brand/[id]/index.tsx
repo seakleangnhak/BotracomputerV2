@@ -9,6 +9,10 @@ export const useBrandProductsData = routeLoader$(async ({ params, redirect }) =>
   const id = ids[ids.length - 1]
   const res = await fetch("https://admin.botracomputer.com/server/api/product.php?is_disable=0&limit=10000&brand_id=${id}")
 
+  if (id == "") {
+    print()
+  }
+
   if (!res.ok) {
     redirect(301, "/")
     return null
