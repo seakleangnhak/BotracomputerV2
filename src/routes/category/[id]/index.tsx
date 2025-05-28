@@ -7,7 +7,7 @@ import ProductSection from '~/components/product/product-section';
 export const useCategoryProductsData = routeLoader$(async ({ params, redirect }) => {
   const ids = params.id.split("-")
   const id = ids[ids.length - 1]
-  const res = await fetch(`${import.meta.env.PUBLIC_API_URL}/server/api/product.php?is_disable=0&limit=10000&category_id=${id}`)
+  const res = await fetch("https://admin.botracomputer.com/server/api/product.php?is_disable=0&limit=10000&category_id=${id}")
 
   if (!res.ok) {
     redirect(301, "/")

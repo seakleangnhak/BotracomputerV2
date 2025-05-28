@@ -7,13 +7,13 @@ import styles from './styles.css?inline'
 
 
 export const useBrandData = routeLoader$(async () => {
-  const res = await fetch(`${import.meta.env.PUBLIC_API_URL}/server/api/brand.php`)
+  const res = await fetch("https://admin.botracomputer.com/server/api/brand.php")
   const brands = (await res.json()).data as BrandModel[]
   return brands
 })
 
 export const useCategoryData = routeLoader$(async () => {
-  const res = await fetch(`${import.meta.env.PUBLIC_API_URL}/server/api/category.php`)
+  const res = await fetch("https://admin.botracomputer.com/server/api/category.php")
   const categories = (await res.json()).data as CategoryModel[]
   return categories
 })
