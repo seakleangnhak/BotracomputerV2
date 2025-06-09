@@ -1,11 +1,20 @@
 {
   "headers": [
     {
-      "source": "/(.*)",
+      "source": "/(.*)?service-worker.js",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=2678400"
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/(assets|build)/.*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, s-maxage=31536000, immutable"
         }
       ]
     }

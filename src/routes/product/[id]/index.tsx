@@ -7,7 +7,7 @@ import ProductItem from "~/components/product/product-item";
 export const useProductData = routeLoader$(async ({ params, redirect }) => {
     const ids = params.id.split("-")
     const id = ids[ids.length - 1]
-    const res = await fetch("https://admin.botracomputer.com/server/api/product.php/" + id)
+    const res = await fetch(`https://admin.botracomputer.com/server/api/product.php/${id}`)
 
     if (!res.ok) {
         redirect(301, "/")
