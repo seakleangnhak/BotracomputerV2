@@ -33,10 +33,10 @@ export default component$(() => {
 
     return (
         <div class="md:flex mt-4 justify-center max-w-screen-xl md:mx-auto px-4 gap-4">
-            <div class="md:w-[400px] mx-auto md:mx-0 my-2">
+            <div class="md:w-[400px] md:h-fit mx-auto md:mx-0 my-2">
                 <ProductItem product={productSignal.value} productPage={true} />
             </div>
-            <div class="md:min-w-[400px] mx-auto md:mx-0 my-2">
+            <div class="md:min-w-[400px] md:max-w-[600px] md:w-fit mx-auto md:mx-0 my-2">
                 <ProductDescription product={productSignal.value} />
             </div>
         </div>

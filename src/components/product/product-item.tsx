@@ -21,7 +21,7 @@ export default component$((props: { product: ProductModel, productPage?: boolean
                             (<h1 class="text-base font-normal">{props.product.name}</h1>) :
                             (<p class="text-base font-normal">{props.product.name}</p>)
                     }
-                    <span>${props.product.regular_price ?? 0}</span>
+                    <span class="font-bold">${props.product.regular_price ?? 0}</span>
                 </div>
                 <div class="p-1 m-1 text-center text-base text-zinc-100 font-bold rounded-[4px] bg-blue-600">
                     <span>{props.product.brand_name ?? "Botra Computer"}</span>
