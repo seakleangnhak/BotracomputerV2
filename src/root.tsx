@@ -1,41 +1,56 @@
-import { component$, isDev } from "@builder.io/qwik";
-import { QwikCityProvider, RouterOutlet } from "@builder.io/qwik-city";
-import { QwikPartytown } from './components/partytown/partytown';
-import { RouterHead } from "./components/router-head/router-head";
+import { component$ } from "@builder.io/qwik";
+import {
+  QwikCityProvider,
+  RouterOutlet,
+  useDocumentHead,
+  useLocation,
+} from "@builder.io/qwik-city";
 
 import "./global.css";
 
+const AppHead = component$(() => {
+  const head = useDocumentHead();
+  const loc = useLocation();
+
+  return (
+    <>
+      <title>{head.title}</title>
+      <link rel="canonical" href={loc.url.href} />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      {head.meta.map((m) => (
+        <meta key={m.key} {...m} />
+      ))}
+      {head.links.map((l) => (
+        <link key={l.key} {...l} />
+      ))}
+      {head.styles.map((s) => (
+        <style
+          key={s.key}
+          {...s.props}
+          {...(s.props?.dangerouslySetInnerHTML
+            ? {}
+            : { dangerouslySetInnerHTML: s.style })}
+        />
+      ))}
+      {head.scripts.map((s) => (
+        <script
+          key={s.key}
+          {...s.props}
+          {...(s.props?.dangerouslySetInnerHTML
+            ? {}
+            : { dangerouslySetInnerHTML: s.script })}
+        />
+      ))}
+    </>
+  );
+});
+
 export default component$(() => {
-  /**
-   * The root of a QwikCity site always start with the <QwikCityProvider> component,
-   * immediately followed by the document's <head> and <body>.
-   *
-   * Don't remove the `<head>` and `<body>` elements.
-   */
-
-  const partytownScript = `
-            window.dataLayer = window.dataLayer || [];
-            window.gtag = function() {
-              dataLayer.push(arguments);
-            }
-            gtag('js', new Date());
-            gtag('config', 'G-7XL1BKJ430');
-          `
-
   return (
     <QwikCityProvider>
       <head>
         <meta charset="utf-8" />
-        <QwikPartytown forward={['gtag','dataLayer.push']} />
-        <script async type="text/partytown" src="https://www.googletagmanager.com/gtag/js?id=G-7XL1BKJ430"/>
-        <script type="text/partytown" dangerouslySetInnerHTML={partytownScript}/>
-        {!isDev && (
-          <link
-            rel="manifest"
-            href={`${import.meta.env.BASE_URL}manifest.json`}
-          />
-        )}
-        <RouterHead />
+        <AppHead />
       </head>
       <body lang="en">
         <RouterOutlet />

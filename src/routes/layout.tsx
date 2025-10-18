@@ -1,39 +1,9 @@
-import { component$, Slot, useStyles$ } from '@builder.io/qwik';
-import { routeLoader$ } from '@builder.io/qwik-city';
+import { component$, Slot } from '@builder.io/qwik';
 
-import Header from '~/components/header/header';
-import Footer from '~/components/footer/footer';
-import styles from './styles.css?inline'
-
-
-export const useBrandData = routeLoader$(async () => {
-  const res = await fetch("https://admin.botracomputer.com/server/api/brand.php")
-  const brands = (await res.json()).data as BrandModel[]
-  return brands
-})
-
-export const useCategoryData = routeLoader$(async () => {
-  const res = await fetch("https://admin.botracomputer.com/server/api/category.php")
-  const categories = (await res.json()).data as CategoryModel[]
-  return categories
-})
-
-export const useBrandsCategoriesData = routeLoader$(async (requestEvent) => {
-  const brands = await requestEvent.resolveValue(useBrandData)
-  const categories = await requestEvent.resolveValue(useCategoryData)
-  return { brands: brands, categories: categories }
-})
-
-export default component$(() => {
-  useStyles$(styles);
-
-  return (
-    <>
-      <Header />
-      <main class="pb-4">
-        <Slot />
-      </main>
-      <Footer />
-    </>
-  );
-});
+export default component$(() => (
+  <div class="flex min-h-screen flex-col bg-zinc-950 text-zinc-100">
+    <main class="flex flex-1 items-center justify-center px-6">
+      <Slot />
+    </main>
+  </div>
+));
