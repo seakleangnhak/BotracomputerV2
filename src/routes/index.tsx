@@ -9,7 +9,7 @@ import Slider from '~/components/slider/slider';
 
 
 export const useNewProductData = routeLoader$(async () => {
-  const res = await fetch("https://admin.botracomputer.com/server/api/product.php?limit=10")
+  const res = await fetch("https://admin.botracomputer.com/server/api/product.php?is_disable=0&limit=10")
   const products = (await res.json()).data.data as ProductModel[]
   return products
 })
