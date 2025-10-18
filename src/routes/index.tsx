@@ -16,7 +16,7 @@ export default component$(() => (
       <a class="text-blue-300 underline pl-1" href="tel:015818781">015 818 781</a>.
     </p>
   </section>
-));
+)); 
 
 export const head: DocumentHead = {
   title: 'Botra Computer | Maintenance',
