@@ -18,8 +18,6 @@ interface ProductModel {
     brand_id?: number;
     brand_name?: string;
     brand_logo?: string;
-    position?: number;
-    parent?: number;
     variation?: number;
     event_text?: string;
     event_color?: string;
