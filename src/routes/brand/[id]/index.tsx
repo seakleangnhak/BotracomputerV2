@@ -7,7 +7,7 @@ import ProductSection from '~/components/product/product-section';
 export const useBrandProductsData = routeLoader$(async ({ params, redirect }) => {
   const ids = params.id.split("-")
   const id = ids[ids.length - 1]
-  const res = await fetch(`https://api.botracomputer.com/api/v1/productd?is_disable=0&limit=10000&brand_id=${id}`)
+  const res = await fetch(`https://api.botracomputer.com/api/v1/products?is_disable=0&limit=10000&brand_id=${id}`)
 
   if (id == "") {
     print()
