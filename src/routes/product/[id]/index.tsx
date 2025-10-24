@@ -1,25 +1,30 @@
 import { component$ } from "@builder.io/qwik";
-import { routeLoader$ } from "@builder.io/qwik-city";
+import { Link, routeLoader$ } from "@builder.io/qwik-city";
 import type { DocumentHead } from '@builder.io/qwik-city';
 import ProductDescription from "~/components/product/product-description";
 import ProductItem from "~/components/product/product-item";
+import { buildImageKitRawUrl } from "~/utils/url";
 
-export const useProductData = routeLoader$(async ({ params, redirect }) => {
-    const ids = params.id.split("-")
+export const useProductData = routeLoader$(async (requestEvent) => {
+    const ids = requestEvent.params.id.split("-")
     const id = ids[ids.length - 1]
-    const res = await fetch(`https://api.botracomputer.com/api/v1/products/${id}`)
 
-    if (!res.ok) {
-        redirect(301, "/")
+    if (!id) {
         return null
-    } else {
-        const product = (await res.json()).data as ProductModel
+    }
 
-        if (!product) {
-            redirect(301, "/")
+    try {
+        const res = await fetch(`https://api.botracomputer.com/api/v1/products/${id}`)
+
+        if (!res.ok) {
+            return null
         }
 
-        return product
+        const product = (await res.json()).data as ProductModel | undefined
+
+        return product ?? null
+    } catch {
+        return null
     }
 })
 
@@ -28,7 +33,17 @@ export default component$(() => {
     const productSignal = useProductData()
 
     if (!productSignal || !productSignal.value) {
-        return <></>
+        return (
+            <div class="mx-auto my-16 max-w-screen-md rounded-md border border-blue-200 bg-white p-8 text-center shadow-sm">
+                <h1 class="text-3xl font-semibold text-blue-800">Product unavailable</h1>
+                <p class="mt-3 text-base text-slate-600">
+                    We couldn't find the product you were looking for. It may have been moved or is no longer available.
+                </p>
+                <Link prefetch href="/" class="mt-6 inline-flex rounded-md border border-blue-700 px-5 py-2 text-blue-700 transition hover:bg-blue-700 hover:text-white">
+                    Return home
+                </Link>
+            </div>
+        )
     }
 
     return (
@@ -53,7 +68,7 @@ export const head: DocumentHead = ({ resolveValue, url }) => {
 
     const title = `${product.brand_name}  ${product.name} @ Botra Computer KH, Cambodia`
     const desc = `${product.brand_name}  ${product.name} are available at Botra Computer @ Phnom Penh Cambodia. ${product.brand_name}  ${product.name} are available for both retail and wholesale. Tel: (012/015/068) 818 781`
-    const imageUrl = `https://ik.imagekit.io/botracomputer/ik-seo/${(product.images ?? "").split(",")[0].replace(".", "/" + product.name.replaceAll(" ", "-") + ".")}`
+    const imageUrl = buildImageKitRawUrl(product.images, product.name)
 
     return {
         title: title,

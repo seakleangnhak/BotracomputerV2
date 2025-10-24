@@ -18,7 +18,7 @@ export default component$(() => {
             <header class="sticky top-0 z-50 text-zinc-100">
                 <nav class="flex lg:px-20 bg-gradient-to-r from-blue-800 to-blue-700">
                     {/* Logo */}
-                    <Link prefetch={true} aria-label="Logo" href="/">
+                    <Link prefetch={false} aria-label="Logo" href="/">
                         <div class="hidden md:flex p-2 ml-2 gap-4 items-center">
                             <Image layout="fixed" width={40} height={40} loading="lazy" decoding="async" alt="BotraComputer Logo" src={`https://ik.imagekit.io/botracomputer/logo.png?tr=w-${50},h-${50},c-at_max`} class="object-contain" />
                             <div class="font-bold text-2xl">
@@ -29,7 +29,7 @@ export default component$(() => {
 
                     {/* menu items */}
                     <div class="flex-1 flex md:mx-4 justify-center md:justify-end">
-                        <Link prefetch={true} aria-label="Home" href="/"><MenuItem>Home</MenuItem></Link>
+                        <Link prefetch={false} aria-label="Home" href="/"><MenuItem>Home</MenuItem></Link>
                         <button onClick$={() => { showBrand.value = true }}><MenuItem>Brand</MenuItem></button>
                         <button onClick$={() => { showCategory.value = true }}><MenuItem>Category</MenuItem></button>
                         <div class="hidden md:block">
