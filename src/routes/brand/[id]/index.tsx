@@ -1,7 +1,8 @@
-import { component$ } from '@builder.io/qwik';
+import { $, component$, useSignal } from '@builder.io/qwik';
 import { routeLoader$ } from '@builder.io/qwik-city';
 import type { DocumentHead } from '@builder.io/qwik-city';
 import { Image } from '@unpic/qwik';
+import ProductFilters, { type ProductFilterState } from '~/components/filter/product-filters';
 import LazyProductSection from '~/components/product/lazy-product-section';
 import { cacheGet, cacheSet, DEFAULT_CACHE_TTL_MS } from '~/utils/cache';
 import { buildImageKitRawUrl, buildImageKitSeoUrl } from '~/utils/url';
@@ -113,9 +114,89 @@ export default component$(() => {
     return <></>
   }
 
+  const filterState = useSignal<ProductFilterState>({
+    brands: [],
+    categories: [],
+    minPrice: undefined,
+    maxPrice: undefined,
+    inStockOnly: false,
+    search: "",
+  });
+
+  const handleFilterChange = $((next: ProductFilterState) => {
+    filterState.value = next;
+  });
+
   const hero = productsSignal.value.hero
   const groups = productsSignal.value.groups
   const hasProducts = groups.length > 0
+  const allProducts = groups.flatMap((group) => group.products)
+
+  const filters = filterState.value
+  const searchTerm = filters.search.trim().toLowerCase()
+  const brandSet = new Set(filters.brands)
+  const categorySet = new Set(filters.categories)
+
+  const matchesFilters = (product: ProductModel) => {
+    if (brandSet.size > 0) {
+      const brandId = product.brand_id != null
+        ? `${product.brand_id}`
+        : (product.brand_name ?? "").trim()
+      if (!brandSet.has(brandId)) {
+        return false
+      }
+    }
+
+    if (categorySet.size > 0) {
+      const categoryId = product.category_id != null
+        ? `${product.category_id}`
+        : (product.category_name ?? "").trim()
+      if (!categorySet.has(categoryId)) {
+        return false
+      }
+    }
+
+    if (filters.inStockOnly && product.in_stock !== 1) {
+      return false
+    }
+
+    const price = product.sale_price ?? product.regular_price ?? 0
+    if (filters.minPrice !== undefined && price < filters.minPrice) {
+      return false
+    }
+    if (filters.maxPrice !== undefined && price > filters.maxPrice) {
+      return false
+    }
+
+    if (searchTerm) {
+      const target = `${product.name ?? ""} ${product.brand_name ?? ""} ${product.category_name ?? ""}`.toLowerCase()
+      if (!target.includes(searchTerm)) {
+        return false
+      }
+    }
+
+    return true
+  }
+
+  const filteredGroups = hasProducts
+    ? groups
+        .map((group) => ({
+          title: group.title,
+          products: group.products.filter(matchesFilters),
+        }))
+        .filter((group) => group.products.length > 0)
+    : []
+
+  const hasActiveFilters =
+    filters.brands.length > 0 ||
+    filters.categories.length > 0 ||
+    filters.search.trim().length > 0 ||
+    filters.minPrice !== undefined ||
+    filters.maxPrice !== undefined ||
+    filters.inStockOnly
+
+  const hasFilteredProducts = filteredGroups.length > 0
+  const showEmptyDueToFilters = hasProducts && hasActiveFilters && !hasFilteredProducts
 
   const heroImage = hero
     ? buildImageKitSeoUrl(
@@ -133,12 +214,50 @@ export default component$(() => {
 
   return (
     <div class="max-w-screen-xl xl:mx-auto mx-2 md:mx-4 lg:mx-16">
-      {heroImage && (
-        <Image layout="fullWidth" aspectRatio={1} loading="lazy" decoding="async" alt="Brand Logo" src={heroImage} class="h-[150px] w-[150px] mx-auto my-4 rounded-md bg-white overflow-hidden object-contain" />
+      <ProductFilters
+        products={allProducts}
+        value={filterState.value}
+        onChange={handleFilterChange}
+        title="Filters"
+        class="mt-6"
+        enableBrandFilter={false}
+      />
+
+      {hero && (
+        <div class="mt-6 flex flex-col items-center gap-3 text-center">
+          {heroImage && (
+            <Image
+              layout="fullWidth"
+              aspectRatio={1}
+              loading="lazy"
+              decoding="async"
+              alt={hero.name ?? "Brand"}
+              src={heroImage}
+              class="h-[150px] w-[150px] rounded-full border border-blue-200 bg-white object-contain shadow-md"
+            />
+          )}
+          <h1 class="text-3xl font-semibold text-blue-900 md:text-4xl">
+            {hero.name ?? "Brand"}
+          </h1>
+        </div>
       )}
 
-      {hasProducts ? (
-        groups.map((group, index) => (
+      {(!hasProducts && message) ? (
+        <div class="my-12 rounded-md border border-blue-200 bg-white p-8 text-center shadow-sm">
+          <h2 class="text-2xl font-semibold text-blue-800">No products found</h2>
+          <p class="mt-3 text-base text-slate-600">
+            {message ?? "We looked everywhere but couldn't find products for this brand right now. Try another brand or check again later."}
+          </p>
+        </div>
+      ) : showEmptyDueToFilters ? (
+        <div class="my-12 rounded-md border border-blue-200 bg-white p-8 text-center shadow-sm">
+          <h2 class="text-2xl font-semibold text-blue-800">No products match your filters</h2>
+          <p class="mt-3 text-base text-slate-600">
+            Try adjusting or clearing the filters to see more items.
+          </p>
+        </div>
+      ) : (
+        filteredGroups.map((group, index) => (
           <LazyProductSection
             key={`${group.title}-${group.products[0]?.id ?? index}`}
             title={group.title}
@@ -146,13 +265,6 @@ export default component$(() => {
             immediate={index < 2}
           />
         ))
-      ) : (
-        <div class="my-12 rounded-md border border-blue-200 bg-white p-8 text-center shadow-sm">
-          <h2 class="text-2xl font-semibold text-blue-800">No products found</h2>
-          <p class="mt-3 text-base text-slate-600">
-            {message ?? "We looked everywhere but couldn't find products for this brand right now. Try another brand or check again later."}
-          </p>
-        </div>
       )}
 
     </div>
