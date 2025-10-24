@@ -233,7 +233,7 @@ export default component$(() => {
               decoding="async"
               alt={hero.name ?? "Brand"}
               src={heroImage}
-              class="h-[150px] w-[150px] rounded-full border border-blue-200 bg-white object-contain shadow-md"
+              class="h-[160px] w-[160px] rounded-2xl border border-blue-200 bg-white object-cover shadow-md"
             />
           )}
           <h1 class="text-3xl font-semibold text-blue-900 md:text-4xl">
