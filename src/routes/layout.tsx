@@ -16,7 +16,7 @@ export const useBrandData = routeLoader$(async (requestEvent) => {
   const cached = cacheGet<BrandModel[]>(BRAND_CACHE_KEY)
 
   try {
-    const res = await fetch("https://mtdiaxbjtxxb.ap-southeast-1.clawcloudrun.com/api/v1/brands?is_disable=0")
+    const res = await fetch("https://api.botracomputer.com/api/v1/brands?is_disable=0")
 
     if (!res.ok) {
       return cached ?? EMPTY_BRANDS
@@ -36,7 +36,7 @@ export const useCategoryData = routeLoader$(async (requestEvent) => {
   const cached = cacheGet<CategoryModel[]>(CATEGORY_CACHE_KEY)
 
   try {
-    const res = await fetch("https://mtdiaxbjtxxb.ap-southeast-1.clawcloudrun.com/api/v1/categories?is_disable=0")
+    const res = await fetch("https://api.botracomputer.com/api/v1/categories?is_disable=0")
 
     if (!res.ok) {
       return cached ?? EMPTY_CATEGORIES

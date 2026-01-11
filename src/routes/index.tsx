@@ -16,7 +16,7 @@ export const useNewProductData = routeLoader$(async (requestEvent) => {
   const cached = cacheGet<ProductModel[]>(NEW_PRODUCTS_CACHE_KEY)
 
   try {
-    const res = await fetch("https://mtdiaxbjtxxb.ap-southeast-1.clawcloudrun.com/api/v1/products?is_disable=0&limit=10")
+    const res = await fetch("https://api.botracomputer.com/api/v1/products?is_disable=0&limit=10")
 
     if (!res.ok) {
       return cached ?? EMPTY_PRODUCTS

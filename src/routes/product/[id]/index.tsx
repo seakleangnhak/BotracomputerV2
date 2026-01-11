@@ -14,7 +14,7 @@ export const useProductData = routeLoader$(async (requestEvent) => {
     }
 
     try {
-        const res = await fetch(`https://mtdiaxbjtxxb.ap-southeast-1.clawcloudrun.com/api/v1/products/${id}`)
+        const res = await fetch(`https://api.botracomputer.com/api/v1/products/${id}`)
 
         if (!res.ok) {
             return null
