@@ -12,6 +12,8 @@
     "build.client": "vite build",
     "build.preview": "vite build --ssr src/entry.preview.tsx",
     "build.server": "vite build -c adapters/netlify-edge/vite.config.ts",
+    "build.server.node": "vite build -c adapters/node-server/vite.config.ts",
+    "build.node": "npm run build.client && npm run build.server.node",
     "build.types": "tsc --incremental --noEmit",
     "deploy": "netlify deploy --build",
     "dev": "vite --mode ssr",
@@ -20,6 +22,8 @@
     "fmt.check": "prettier --check .",
     "lint": "eslint \"src/**/*.ts*\"",
     "preview": "qwik build preview && vite preview --open",
+    "preview:docker": "qwik build preview && vite preview --host 0.0.0.0 --port 4173 --strictPort",
+    "start:prod": "node server/entry.node-server.js",
     "start": "vite --open --mode ssr",
     "qwik": "qwik"
   },

@@ -6,12 +6,31 @@ import CategoryHomeItem from '~/components/category/category-home-item';
 import ProductSection from '~/components/product/product-section';
 import { useBrandsCategoriesData } from './layout';
 import Slider from '~/components/slider/slider';
+import { cacheGet, cacheSet, DEFAULT_CACHE_TTL_MS } from '~/utils/cache';
 
+const NEW_PRODUCTS_CACHE_KEY = 'home-new-products';
+const EMPTY_PRODUCTS: ProductModel[] = [];
 
-export const useNewProductData = routeLoader$(async () => {
-  const res = await fetch("https://api.botracomputer.com/api/v1/products?is_disable=0&limit=10")
-  const products = (await res.json()).data.data as ProductModel[]
-  return products
+export const useNewProductData = routeLoader$(async (requestEvent) => {
+  requestEvent.cacheControl({ maxAge: 300, staleWhileRevalidate: 60 })
+  const cached = cacheGet<ProductModel[]>(NEW_PRODUCTS_CACHE_KEY)
+
+  try {
+    const res = await fetch("https://mtdiaxbjtxxb.ap-southeast-1.clawcloudrun.com/api/v1/products?is_disable=0&limit=10")
+
+    if (!res.ok) {
+      return cached ?? EMPTY_PRODUCTS
+    }
+
+    const payload = await res.json()
+    const products = Array.isArray(payload?.data?.data)
+      ? (payload.data.data as ProductModel[])
+      : EMPTY_PRODUCTS
+    cacheSet(NEW_PRODUCTS_CACHE_KEY, products, DEFAULT_CACHE_TTL_MS)
+    return products
+  } catch {
+    return cached ?? EMPTY_PRODUCTS
+  }
 })
 
 export const useIndexData = routeLoader$(async (requestEvent) => {

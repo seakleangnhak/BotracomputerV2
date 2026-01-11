@@ -83,7 +83,7 @@ export const useCategoryProductsData = routeLoader$(async (requestEvent) => {
   }
 
   try {
-    const res = await fetch(`https://api.botracomputer.com/api/v1/products?is_disable=0&limit=all&category_id=${id}`)
+    const res = await fetch(`https://mtdiaxbjtxxb.ap-southeast-1.clawcloudrun.com/api/v1/products?is_disable=0&limit=all&category_id=${id}`)
 
     if (!res.ok) {
       cacheSet(cacheKey, EMPTY_CATEGORY_PAYLOAD, DEFAULT_CACHE_TTL_MS)
